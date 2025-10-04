@@ -1,0 +1,1547 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxuryMart - Premium Shopping Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#ec4899',
+                        dark: '#0f172a',
+                        light: '#f8fafc'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-in': 'slideIn 0.6s ease-out',
+                        'fade-in': 'fadeIn 1s ease-in forwards'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+        }
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(0);
+        }
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .slide-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+        }
+        .slide-track {
+            display: flex;
+            width: calc(250px * 12);
+            animation: scroll 30s linear infinite;
+        }
+        .slide-track:hover {
+            animation-play-state: paused;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-250px * 6)); }
+        }
+        .slide {
+            width: 250px;
+            flex-shrink: 0;
+            margin: 0 16px;
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        .glow {
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+        .pulse-border {
+            animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .cart-item {
+            transition: all 0.3s ease;
+        }
+        .cart-item:hover {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        }
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+        .active-filter {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+        .quantity-btn {
+            transition: all 0.2s ease;
+        }
+        .quantity-btn:hover {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 overflow-x-hidden">
+    <!-- Main container -->
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-700/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+                            <i class="fas fa-crown text-white text-xl"></i>
+                        </div>
+                        <a href="#" class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">LuxuryMart</a>
+                    </div>
+                    
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="#home" class="nav-link font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Home</a>
+                        <a href="#products" class="nav-link font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Products</a>
+                        <a href="#cart" class="nav-link font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Cart</a>
+                        <a href="#login" class="nav-link font-medium text-gray-700 dark:text-gray-300 hover:text-primary">Account</a>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="relative hidden md:block">
+                            <input type="text" placeholder="Search luxury items..." class="search-input pl-12 pr-4 py-3 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-64 transition-all duration-300">
+                            <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
+                        </div>
+                        
+                        <button id="theme-toggle" class="p-3 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300">
+                            <i id="theme-icon" class="fas fa-moon text-lg text-gray-600 dark:text-gray-300"></i>
+                        </button>
+                        
+                        <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
+                            <i class="fas fa-bars text-xl text-gray-600 dark:text-gray-300"></i>
+                        </button>
+                        
+                        <div class="relative">
+                            <button id="cart-button" class="p-3 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 relative transition-all duration-300">
+                                <i class="fas fa-shopping-cart text-xl text-gray-600 dark:text-gray-300"></i>
+                                <span id="cart-count" class="badge">0</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium nav-link text-gray-700 dark:text-gray-300">Home</a>
+                    <a href="#products" class="block px-3 py-2 rounded-md text-base font-medium nav-link text-gray-700 dark:text-gray-300">Products</a>
+                    <a href="#cart" class="block px-3 py-2 rounded-md text-base font-medium nav-link text-gray-700 dark:text-gray-300">Cart</a>
+                    <a href="#login" class="block px-3 py-2 rounded-md text-base font-medium nav-link text-gray-700 dark:text-gray-300">Account</a>
+                    <div class="px-3 py-2">
+                        <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                        <i class="fas fa-search absolute left-4 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="flex-grow">
+            <!-- Home Page -->
+            <section id="home" class="page hidden">
+                <!-- Hero Section -->
+                <div class="hero-gradient relative overflow-hidden">
+                    <div class="absolute inset-0 bg-black/20"></div>
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-24">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                            <div class="text-white space-y-8 animate-fade-in">
+                                <h1 class="text-5xl md:text-7xl font-bold leading-tight">
+                                    Discover <span class="bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-500 bg-clip-text text-transparent">Luxury</span> Lifestyle
+                                </h1>
+                                <p class="text-xl md:text-2xl text-gray-100 max-w-2xl">
+                                    Premium products curated for the discerning customer. Experience elegance, quality, and exclusivity.
+                                </p>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <a href="#products" class="bg-white text-gray-900 hover:bg-gray-100 font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                        Shop Collection
+                                    </a>
+                                    <a href="#products" class="bg-transparent border-2 border-white text-white hover:bg-white/10 font-bold py-4 px-8 rounded-full text-lg transition-all duration-300">
+                                        Explore More
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <div class="floating">
+                                    <img src="watch1.jpg" alt="Luxury Watch" class="rounded-3xl shadow-2xl w-full max-w-md mx-auto glow">
+                                </div>
+                                <div class="absolute -top-6 -left-6 w-24 h-24 bg-yellow-400 rounded-full opacity-20 animate-pulse"></div>
+                                <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-pink-400 rounded-full opacity-20 animate-pulse-slow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Section -->
+                <div class="py-20 bg-white dark:bg-gray-800">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="text-center mb-16">
+                            <h2 class="text-4xl font-bold mb-4">Why Choose LuxuryMart?</h2>
+                            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                                We bring you the finest selection of luxury products with exceptional service and guaranteed authenticity.
+                            </p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300">
+                                <div class="w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <i class="fas fa-certificate text-white text-2xl"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-3">Authentic Guarantee</h3>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    Every product is 100% authentic with certificate of authenticity included.
+                                </p>
+                            </div>
+                            <div class="bg-gradient-to-br from-green-50 to-teal-50 dark:from-gray-700 dark:to-gray-800 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300">
+                                <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <i class="fas fa-shipping-fast text-white text-2xl"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-3">Express Delivery</h3>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    Free express shipping worldwide with real-time tracking.
+                                </p>
+                            </div>
+                            <div class="bg-gradient-to-br from-pink-50 to-red-50 dark:from-gray-700 dark:to-gray-800 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300">
+                                <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <i class="fas fa-headset text-white text-2xl"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-3">24/7 Concierge</h3>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    Personal shopping assistants available around the clock.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crazy Slideshow Section -->
+                <div class="py-20 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="text-center mb-16">
+                            <h2 class="text-4xl font-bold mb-4">Featured Collections</h2>
+                            <p class="text-xl text-gray-600 dark:text-gray-300">
+                                Discover our most exclusive and trending luxury items
+                            </p>
+                        </div>
+                        
+                        <div class="slide-container overflow-hidden">
+                            <div class="slide-track">
+                                <!-- Duplicate products to create seamless loop -->
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="headphone.jpg" alt="Designer Bag" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <!-- <h3 class="font-bold text-lg mb-2">Designer Leather Bag</h3>
+                                        <p class="text-primary font-bold text-xl">$2,499</p> -->
+                                    </div>
+                                </div>
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product2.jpeg" alt="Luxury Watch" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <!-- <h3 class="font-bold text-lg mb-2">Swiss Luxury Watch</h3>
+                                        <p class="text-primary font-bold text-xl">$8,999</p> -->
+                                    </div>
+                                </div>
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product3.jpeg" alt="Premium Perfume" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <h3 class="font-bold text-lg mb-2">Exclusive Perfume</h3>
+                                        <p class="text-primary font-bold text-xl">$399</p>
+                                    </div>
+                                </div>
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product4.jpeg" alt="Silk Scarf" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <h3 class="font-bold text-lg mb-2">Silk Designer Scarf</h3>
+                                        <p class="text-primary font-bold text-xl">$299</p>
+                                    </div>
+                                </div>
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product5.jpeg" alt="Gold Jewelry" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <h3 class="font-bold text-lg mb-2">24K Gold Necklace</h3>
+                                        <p class="text-primary font-bold text-xl">$5,999</p>
+                                    </div>
+                                </div>
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product1.jpeg" alt="Leather Shoes" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <h3 class="font-bold text-lg mb-2">Italian Leather Shoes</h3>
+                                        <p class="text-primary font-bold text-xl">$1,299</p>
+                                    </div>
+                                </div>
+                                <!-- Repeat for seamless loop -->
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product4.jpeg" alt="Designer Bag" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <h3 class="font-bold text-lg mb-2">Designer Leather Bag</h3>
+                                        <p class="text-primary font-bold text-xl">$2,499</p>
+                                    </div>
+                                </div>
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product2.jpeg" alt="Luxury Watch" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <h3 class="font-bold text-lg mb-2">Swiss Luxury Watch</h3>
+                                        <p class="text-primary font-bold text-xl">$8,999</p>
+                                    </div>
+                                </div>
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product3.jpeg" alt="Premium Perfume" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <h3 class="font-bold text-lg mb-2">Exclusive Perfume</h3>
+                                        <p class="text-primary font-bold text-xl">$399</p>
+                                    </div>
+                                </div>
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product4.jpeg" alt="Silk Scarf" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <h3 class="font-bold text-lg mb-2">Silk Designer Scarf</h3>
+                                        <p class="text-primary font-bold text-xl">$299</p>
+                                    </div>
+                                </div>
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product5.jpeg" alt="Gold Jewelry" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <!-- <h3 class="font-bold text-lg mb-2">24K Gold Necklace</h3>
+                                        <p class="text-primary font-bold text-xl">$5,999</p> -->
+                                    </div>
+                                </div>
+                                <div class="slide">
+                                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <img src="product1.jpeg" alt="Leather Shoes" class="w-full h-48 object-cover rounded-xl mb-4">
+                                        <!-- <h3 class="font-bold text-lg mb-2">Italian Leather Shoes</h3>
+                                        <p class="text-primary font-bold text-xl">$1,299</p> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonials Section -->
+                <div class="py-20 bg-white dark:bg-gray-800">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="text-center mb-16">
+                            <h2 class="text-4xl font-bold mb-4">What Our Customers Say</h2>
+                            <p class="text-xl text-gray-600 dark:text-gray-300">
+                                Join thousands of satisfied luxury shoppers
+                            </p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 rounded-2xl p-8 shadow-lg">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center text-white font-bold mr-4">
+                                        JS
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold">James Smith</h4>
+                                        <div class="flex text-yellow-400">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 italic">
+                                    "The quality and authenticity are unmatched. My luxury watch arrived in perfect condition with all certificates."
+                                </p>
+                            </div>
+                            <div class="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 rounded-2xl p-8 shadow-lg">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center text-white font-bold mr-4">
+                                        EM
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold">Emma Martinez</h4>
+                                        <div class="flex text-yellow-400">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 italic">
+                                    "Exceptional customer service! They helped me choose the perfect designer bag for my anniversary."
+                                </p>
+                            </div>
+                            <div class="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 rounded-2xl p-8 shadow-lg">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center text-white font-bold mr-4">
+                                        MR
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold">Michael Rodriguez</h4>
+                                        <div class="flex text-yellow-400">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 italic">
+                                    "Fast shipping and beautiful packaging. The perfume was exactly as described and lasted longer than expected."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Products Page -->
+            <section id="products" class="page hidden py-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+                        <div>
+                            <h2 class="text-4xl font-bold mb-2">Luxury Collections</h2>
+                            <p class="text-gray-600 dark:text-gray-300">Discover our curated selection of premium products</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+                            <select id="sort-select" class="border border-gray-300 dark:border-gray-600 rounded-full px-6 py-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option>Sort by: Featured</option>
+                                <option>Price: Low to High</option>
+                                <option>Price: High to Low</option>
+                                <option>Customer Rating</option>
+                            </select>
+                            <button id="filter-toggle" class="md:hidden bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-full">
+                                <i class="fas fa-filter mr-2"></i> Filters
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <!-- Filters sidebar -->
+                        <div id="filters-sidebar" class="lg:w-1/4 bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl hidden lg:block">
+                            <h3 class="text-2xl font-bold mb-6">Refine Your Search</h3>
+                            
+                            <div class="mb-8">
+                                <h4 class="font-semibold mb-4 text-lg">Price Range</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600 dark:text-gray-300">$0 - $500</span>
+                                        <div class="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                            <div class="w-1/3 h-full bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600 dark:text-gray-300">$500 - $2000</span>
+                                        <div class="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                            <div class="w-2/3 h-full bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-gray-600 dark:text-gray-300">$2000+</span>
+                                        <div class="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                            <div class="w-full h-full bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h4 class="font-semibold mb-4 text-lg">Categories</h4>
+                                <div class="space-y-3">
+                                    <label class="flex items-center filter-btn p-3 rounded-xl cursor-pointer bg-gray-50 dark:bg-gray-700">
+                                        <input type="checkbox" class="mr-3 filter-checkbox" value="watches">
+                                        <span>Luxury Watches</span>
+                                        <span class="ml-auto text-gray-500">(24)</span>
+                                    </label>
+                                    <label class="flex items-center filter-btn p-3 rounded-xl cursor-pointer bg-gray-50 dark:bg-gray-700">
+                                        <input type="checkbox" class="mr-3 filter-checkbox" value="bags">
+                                        <span>Designer Bags</span>
+                                        <span class="ml-auto text-gray-500">(18)</span>
+                                    </label>
+                                    <label class="flex items-center filter-btn p-3 rounded-xl cursor-pointer bg-gray-50 dark:bg-gray-700">
+                                        <input type="checkbox" class="mr-3 filter-checkbox" value="jewelry">
+                                        <span>Fine Jewelry</span>
+                                        <span class="ml-auto text-gray-500">(32)</span>
+                                    </label>
+                                    <label class="flex items-center filter-btn p-3 rounded-xl cursor-pointer bg-gray-50 dark:bg-gray-700">
+                                        <input type="checkbox" class="mr-3 filter-checkbox" value="fragrance">
+                                        <span>Premium Fragrance</span>
+                                        <span class="ml-auto text-gray-500">(15)</span>
+                                    </label>
+                                    <label class="flex items-center filter-btn p-3 rounded-xl cursor-pointer bg-gray-50 dark:bg-gray-700">
+                                        <input type="checkbox" class="mr-3 filter-checkbox" value="accessories">
+                                        <span>Luxury Accessories</span>
+                                        <span class="ml-auto text-gray-500">(27)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h4 class="font-semibold mb-4 text-lg">Brand</h4>
+                                <div class="space-y-3">
+                                    <label class="flex items-center filter-btn p-3 rounded-xl cursor-pointer bg-gray-50 dark:bg-gray-700">
+                                        <input type="checkbox" class="mr-3 filter-checkbox" value="rolex">
+                                        <span>Rolex</span>
+                                    </label>
+                                    <label class="flex items-center filter-btn p-3 rounded-xl cursor-pointer bg-gray-50 dark:bg-gray-700">
+                                        <input type="checkbox" class="mr-3 filter-checkbox" value="louis">
+                                        <span>Louis Vuitton</span>
+                                    </label>
+                                    <label class="flex items-center filter-btn p-3 rounded-xl cursor-pointer bg-gray-50 dark:bg-gray-700">
+                                        <input type="checkbox" class="mr-3 filter-checkbox" value="chanel">
+                                        <span>Chanel</span>
+                                    </label>
+                                    <label class="flex items-center filter-btn p-3 rounded-xl cursor-pointer bg-gray-50 dark:bg-gray-700">
+                                        <input type="checkbox" class="mr-3 filter-checkbox" value="gucci">
+                                        <span>Gucci</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button id="apply-filters" class="w-full bg-gradient-to-r from-primary to-secondary hover:from-indigo-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold text-lg transition-all duration-300">
+                                Apply Filters
+                            </button>
+                        </div>
+                        
+                        <!-- Products grid -->
+                        <div class="lg:w-3/4">
+                            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                                <!-- Products will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Product Details Page -->
+            <section id="product-details" class="page hidden py-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <a href="#products" class="text-primary hover:underline flex items-center font-medium">
+                            <i class="fas fa-arrow-left mr-2"></i> Back to Collections
+                        </a>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+                        <div class="md:flex">
+                            <div class="md:w-1/2 p-12">
+                                <img id="product-image" src="headphone.jpg" alt="Product" class="w-full rounded-2xl shadow-lg">
+                            </div>
+                            <div class="md:w-1/2 p-12">
+                                <div class="mb-4">
+                                    <span class="bg-gradient-to-r from-primary to-secondary text-white px-4 py-1 rounded-full text-sm font-bold">
+                                        EXCLUSIVE
+                                    </span>
+                                </div>
+                                <h1 id="product-title" class="text-4xl font-bold mb-4">Luxury Swiss Watch</h1>
+                                <div class="flex items-center mb-6">
+                                    <div class="flex text-yellow-400 text-xl">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="ml-3 text-gray-600 dark:text-gray-300 text-lg">(128 reviews)</span>
+                                </div>
+                                <p id="product-price" class="text-5xl font-bold text-transparent bg-gradient-to-r from-primary to-secondary bg-clip-text mb-8">$8,999</p>
+                                <p id="product-description" class="text-gray-600 dark:text-gray-300 mb-8 text-lg leading-relaxed">
+                                    Crafted with precision Swiss engineering, this luxury timepiece features a sapphire crystal face, genuine leather strap, and automatic movement. Each watch comes with a certificate of authenticity and a 5-year international warranty.
+                                </p>
+                                
+                                <div class="mb-8">
+                                    <label class="block mb-4 font-bold text-lg">Select Quantity</label>
+                                    <div class="flex items-center">
+                                        <button id="decrease-qty" class="quantity-btn bg-gray-200 dark:bg-gray-700 w-12 h-12 rounded-l-2xl flex items-center justify-center text-xl">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input id="product-quantity" type="text" value="1" class="w-16 h-12 text-center border-t border-b border-gray-300 dark:border-gray-600 outline-none text-lg font-bold">
+                                        <button id="increase-qty" class="quantity-btn bg-gray-200 dark:bg-gray-700 w-12 h-12 rounded-r-2xl flex items-center justify-center text-xl">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <button id="add-to-cart-btn" class="bg-gradient-to-r from-primary to-secondary hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-2xl text-lg flex-1 transition-all duration-300 transform hover:scale-105">
+                                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                                    </button>
+                                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-bold py-4 px-8 rounded-2xl text-lg">
+                                        <i class="fas fa-heart mr-2"></i> Wishlist
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                                    <div class="grid grid-cols-3 gap-4 text-center">
+                                        <div>
+                                            <i class="fas fa-shield-alt text-2xl text-primary mb-2"></i>
+                                            <p class="font-bold">Authenticity<br>Guaranteed</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-shipping-fast text-2xl text-primary mb-2"></i>
+                                            <p class="font-bold">Free Express<br>Shipping</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-undo text-2xl text-primary mb-2"></i>
+                                            <p class="font-bold">30-Day<br>Returns</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-16">
+                        <h3 class="text-3xl font-bold mb-8">You May Also Like</h3>
+                        <div id="related-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <!-- Related products will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cart Page -->
+            <section id="cart" class="page hidden py-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-bold mb-12">Your Shopping Cart</h2>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+                        <div id="cart-items" class="divide-y divide-gray-200 dark:divide-gray-700">
+                            <!-- Cart items will be loaded here -->
+                        </div>
+                        
+                        <div class="p-12 border-t border-gray-200 dark:border-gray-700">
+                            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center">
+                                <div class="mb-8 lg:mb-0">
+                                    <p class="text-gray-600 dark:text-gray-300 text-lg mb-4">Shipping, taxes, and discounts calculated at checkout.</p>
+                                    <div class="flex space-x-4">
+                                        <input type="text" placeholder="Enter promo code" class="border border-gray-300 dark:border-gray-600 rounded-full px-6 py-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary w-64">
+                                        <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-bold py-3 px-6 rounded-full">
+                                            Apply
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold mb-4">Subtotal: <span id="cart-total" class="text-transparent bg-gradient-to-r from-primary to-secondary bg-clip-text">$0.00</span></div>
+                                    <a href="#checkout" class="bg-gradient-to-r from-primary to-secondary hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-full text-lg inline-block transition-all duration-300 transform hover:scale-105">
+                                        Proceed to Checkout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Checkout Page -->
+            <section id="checkout" class="page hidden py-16">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-bold mb-12">Complete Your Purchase</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-12 shadow-2xl">
+                            <h3 class="text-2xl font-bold mb-8">Billing Information</h3>
+                            <form>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label class="block mb-2 font-bold">First Name</label>
+                                        <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                                    </div>
+                                    <div>
+                                        <label class="block mb-2 font-bold">Last Name</label>
+                                        <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                                    </div>
+                                </div>
+                                <div class="mb-6">
+                                    <label class="block mb-2 font-bold">Email Address</label>
+                                    <input type="email" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+                                <div class="mb-6">
+                                    <label class="block mb-2 font-bold">Address</label>
+                                    <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label class="block mb-2 font-bold">City</label>
+                                        <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                                    </div>
+                                    <div>
+                                        <label class="block mb-2 font-bold">ZIP Code</label>
+                                        <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                                    </div>
+                                </div>
+                                <div class="mb-8">
+                                    <label class="block mb-2 font-bold">Country</label>
+                                    <select class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                                        <option>United States</option>
+                                        <option>Canada</option>
+                                        <option>United Kingdom</option>
+                                        <option>Australia</option>
+                                        <option>France</option>
+                                        <option>Germany</option>
+                                    </select>
+                                </div>
+                                
+                                <h3 class="text-2xl font-bold mb-6">Payment Method</h3>
+                                <div class="space-y-4">
+                                    <label class="flex items-center p-4 border border-gray-300 dark:border-gray-600 rounded-2xl cursor-pointer hover:border-primary">
+                                        <input type="radio" name="payment" class="mr-4" checked>
+                                        <i class="fab fa-cc-visa text-3xl mr-4 text-blue-500"></i>
+                                        <span class="font-bold">Credit/Debit Card</span>
+                                    </label>
+                                    <label class="flex items-center p-4 border border-gray-300 dark:border-gray-600 rounded-2xl cursor-pointer hover:border-primary">
+                                        <input type="radio" name="payment" class="mr-4">
+                                        <i class="fab fa-cc-paypal text-3xl mr-4 text-blue-500"></i>
+                                        <span class="font-bold">PayPal</span>
+                                    </label>
+                                    <label class="flex items-center p-4 border border-gray-300 dark:border-gray-600 rounded-2xl cursor-pointer hover:border-primary">
+                                        <input type="radio" name="payment" class="mr-4">
+                                        <i class="fas fa-wallet text-3xl mr-4 text-green-500"></i>
+                                        <span class="font-bold">Apple Pay</span>
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-12 shadow-2xl">
+                            <h3 class="text-2xl font-bold mb-8">Order Summary</h3>
+                            <div id="checkout-cart-items" class="space-y-6 mb-8">
+                                <!-- Checkout cart items will be loaded here -->
+                            </div>
+                            <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                                <div class="flex justify-between mb-4">
+                                    <span class="font-bold">Subtotal</span>
+                                    <span id="checkout-subtotal" class="font-bold">$0.00</span>
+                                </div>
+                                <div class="flex justify-between mb-4">
+                                    <span>Shipping</span>
+                                    <span class="text-green-500 font-bold">FREE</span>
+                                </div>
+                                <div class="flex justify-between mb-6">
+                                    <span>Tax</span>
+                                    <span id="checkout-tax">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-2xl font-bold border-t border-gray-200 dark:border-gray-700 pt-6">
+                                    <span>Total</span>
+                                    <span id="checkout-total" class="text-transparent bg-gradient-to-r from-primary to-secondary bg-clip-text">$0.00</span>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-primary to-secondary hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-5 px-8 rounded-2xl text-xl mt-8 transition-all duration-300 transform hover:scale-105">
+                                Complete Order
+                            </button>
+                            <p class="text-center text-gray-500 dark:text-gray-400 mt-4 text-sm">
+                                Your order is secured with 256-bit SSL encryption
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Login/Signup Page -->
+            <section id="login" class="page hidden py-16">
+                <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-12 shadow-2xl">
+                        <div class="text-center mb-10">
+                            <div class="w-20 h-20 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-user text-white text-3xl"></i>
+                            </div>
+                            <h2 class="text-3xl font-bold mb-2">Welcome Back</h2>
+                            <p class="text-gray-600 dark:text-gray-300">Sign in to your LuxuryMart account</p>
+                        </div>
+                        
+                        <div class="flex mb-8">
+                            <button id="login-tab" class="flex-1 py-4 px-6 text-center font-bold border-b-4 border-primary text-primary">
+                                Login
+                            </button>
+                            <button id="signup-tab" class="flex-1 py-4 px-6 text-center font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                                Signup
+                            </button>
+                        </div>
+                        
+                        <form id="login-form">
+                            <div class="mb-6">
+                                <label class="block mb-3 font-bold">Email Address</label>
+                                <input type="email" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            </div>
+                            <div class="mb-8">
+                                <label class="block mb-3 font-bold">Password</label>
+                                <input type="password" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105">
+                                Sign In
+                            </button>
+                        </form>
+                        
+                        <form id="signup-form" class="hidden">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block mb-3 font-bold">First Name</label>
+                                    <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary" required>
+                                </div>
+                                <div>
+                                    <label class="block mb-3 font-bold">Last Name</label>
+                                    <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary" required>
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <label class="block mb-3 font-bold">Email Address</label>
+                                <input type="email" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            </div>
+                            <div class="mb-6">
+                                <label class="block mb-3 font-bold">Password</label>
+                                <input type="password" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            </div>
+                            <div class="mb-8">
+                                <label class="block mb-3 font-bold">Confirm Password</label>
+                                <input type="password" class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105">
+                                Create Account
+                            </button>
+                        </form>
+                        
+                        <div class="mt-8 text-center">
+                            <a href="#" class="text-primary hover:underline font-medium">Forgot Password?</a>
+                        </div>
+                        
+                        <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                            <p class="text-center text-gray-600 dark:text-gray-300 mb-4">Or continue with</p>
+                            <div class="flex justify-center space-x-4">
+                                <button class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition-colors">
+                                    <i class="fab fa-facebook-f"></i>
+                                </button>
+                                <button class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white hover:bg-red-700 transition-colors">
+                                    <i class="fab fa-google"></i>
+                                </button>
+                                <button class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-white hover:bg-gray-900 transition-colors">
+                                    <i class="fab fa-apple"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <!-- <footer class="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-6">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+                                <i class="fas fa-crown text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold">LuxuryMart</h3>
+                        </div>
+                        <p class="text-gray-400 leading-relaxed">
+                            Your premier destination for luxury goods. Authentic products, exceptional service, and unparalleled quality.
+                        </p>
+                        <div class="flex space-x-4 mt-6">
+                            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                                <i class="fab fa-pinterest"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-6">Quick Links</h4>
+                        <ul class="space-y-3 text-gray-400">
+                            <li><a href="#home" class="hover:text-white transition-colors">Home</a></li>
+                            <li><a href="#products" class="hover:text-white transition-colors">Products</a></li>
+                            <li><a href="#cart" class="hover:text-white transition-colors">Shopping Cart</a></li>
+                            <li><a href="#login" class="hover:text-white transition-colors">My Account</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Wishlist</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-6">Customer Service</h4>
+                        <ul class="space-y-3 text-gray-400">
+                            <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">FAQs</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Shipping Policy</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Returns & Exchanges</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-6">Newsletter</h4>
+                        <p class="text-gray-400 mb-6">Subscribe to receive exclusive offers and luxury updates</p>
+                        <div class="flex">
+                            <input type="email" placeholder="Your email address" class="px-4 py-3 rounded-l-2xl w-full text-gray-900 focus:outline-none">
+                            <button class="bg-gradient-to-r from-primary to-secondary hover:from-indigo-700 hover:to-purple-700 px-6 rounded-r-2xl transition-all duration-300">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-800 pt-8 text-center text-gray-500">
+                    <p>&copy; 2023 LuxuryMart. All rights reserved. | Crafted with ❤️ for luxury enthusiasts</p>
+                </div>
+            </div>
+        </footer>
+    </div> -->
+
+    
+<script>
+    // Sample luxury product data
+    const products = [
+        {
+            id: 1,
+            name: "Rolex Submariner",
+            price: 8999,
+            category: "watches",
+            rating: 4.9,
+            image: "rolex.jpg",
+            description: "The iconic Rolex Submariner with automatic movement, sapphire crystal, and 300m water resistance."
+        },
+        {
+            id: 2,
+            name: "Louis Vuitton Neverfull",
+            price: 2499,
+            category: "bags",
+            rating: 4.8,
+            image: "lvbag.jpg",
+            description: "Authentic Louis Vuitton Neverfull tote bag in monogram canvas with natural cowhide leather."
+        },
+        {
+            id: 3,
+            name: "Chanel No. 5 Parfum",
+            price: 399,
+            category: "fragrance",
+            rating: 4.7,
+            image: "channel.jpg",
+            description: "The legendary Chanel No. 5 parfum in its iconic bottle, featuring jasmine and rose notes."
+        },
+        {
+            id: 4,
+            name: "Cartier Love Bracelet",
+            price: 5999,
+            category: "jewelry",
+            rating: 4.9,
+            image: "cartier.jpg",
+            description: "18K white gold Cartier Love bracelet with signature screw motif and diamond accents."
+        },
+        {
+            id: 5,
+            name: "Gucci Silk Scarf",
+            price: 299,
+            category: "accessories",
+            rating: 4.6,
+            image: "gucci.jpg",
+            description: "100% silk Gucci scarf with signature GG pattern and hand-rolled edges."
+        },
+        {
+            id: 6,
+            name: "Patek Philippe Nautilus",
+            price: 32999,
+            category: "watches",
+            rating: 5.0,
+            image: "partek.jpg",
+            description: "Patek Philippe Nautilus with stainless steel case, blue dial, and automatic movement."
+        },
+        {
+            id: 7,
+            name: "Hermès Birkin Bag",
+            price: 12999,
+            category: "bags",
+            rating: 4.9,
+            image: "herms.jpg",
+            description: "Authentic Hermès Birkin 30 in Togo leather with palladium hardware."
+        },
+        {
+            id: 8,
+            name: "Tiffany & Co. Diamond Ring",
+            price: 8999,
+            category: "jewelry",
+            rating: 4.8,
+            image: "tifary.jpg",
+            description: "Tiffany & Co. platinum engagement ring with 1.5ct round brilliant diamond."
+        },
+         {
+            id: 9,
+            name: "Tiffany & Co. Diamond Ring",
+            price: 8999,
+            category: "jewelry",
+            rating: 4.8,
+            image: "tifary.jpg",
+            description: "Tiffany & Co. platinum engagement ring with 1.5ct round brilliant diamond."
+        },
+         {
+            id: 10,
+            name: "Tiffany & Co. Diamond Ring",
+            price: 8999,
+            category: "jewelry",
+            rating: 4.8,
+            image: "tifary.jpg",
+            description: "Tiffany & Co. platinum engagement ring with 1.5ct round brilliant diamond."
+        }
+    ];
+
+    // Cart state
+    let cart = [];
+    let currentProduct = null;
+
+    // DOM Elements
+    const pages = document.querySelectorAll('.page');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const cartButton = document.getElementById('cart-button');
+    const cartCount = document.getElementById('cart-count');
+    const productsGrid = document.getElementById('products-grid');
+    const productImage = document.getElementById('product-image');
+    const productTitle = document.getElementById('product-title');
+    const productPrice = document.getElementById('product-price');
+    const productDescription = document.getElementById('product-description');
+    const productQuantity = document.getElementById('product-quantity');
+    const decreaseQty = document.getElementById('decrease-qty');
+    const increaseQty = document.getElementById('increase-qty');
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    const cartItems = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    const checkoutCartItems = document.getElementById('checkout-cart-items');
+    const checkoutSubtotal = document.getElementById('checkout-subtotal');
+    const checkoutTax = document.getElementById('checkout-tax');
+    const checkoutTotal = document.getElementById('checkout-total');
+    const loginTab = document.getElementById('login-tab');
+    const signupTab = document.getElementById('signup-tab');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const filterToggle = document.getElementById('filter-toggle');
+    const filtersSidebar = document.getElementById('filters-sidebar');
+    const applyFiltersBtn = document.getElementById('apply-filters');
+    const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
+
+    // Initialize the app
+    function init() {
+        // Set active page
+        showPage('home');
+        
+        // Load products
+        renderProducts(products);
+        
+        // Load cart from localStorage if available
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
+            updateCartCount();
+        }
+        
+        // Theme toggle
+        const isDark = localStorage.getItem('darkMode') === 'true';
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+            themeIcon.className = 'fas fa-sun text-lg text-gray-600 dark:text-gray-300';
+        }
+        
+        // Event listeners
+        setupEventListeners();
+        
+        // Show home page with animation
+        setTimeout(() => {
+            document.querySelector('#home .animate-fade-in').style.animation = 'fadeIn 1s ease-in forwards';
+        }, 100);
+    }
+
+    // Set up event listeners
+    function setupEventListeners() {
+        // Navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = link.getAttribute('href').substring(1);
+                showPage(target);
+                if (window.innerWidth < 768) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+        
+        // Theme toggle
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            themeIcon.className = isDark ? 'fas fa-sun text-lg text-gray-600 dark:text-gray-300' : 'fas fa-moon text-lg text-gray-600 dark:text-gray-300';
+        });
+        
+        // Mobile menu
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Cart button
+        cartButton.addEventListener('click', () => {
+            showPage('cart');
+        });
+        
+        // Product quantity controls
+        decreaseQty.addEventListener('click', () => {
+            let qty = parseInt(productQuantity.value);
+            if (qty > 1) {
+                productQuantity.value = qty - 1;
+            }
+        });
+        
+        increaseQty.addEventListener('click', () => {
+            let qty = parseInt(productQuantity.value);
+            productQuantity.value = qty + 1;
+        });
+        
+        // Add to cart
+        addToCartBtn.addEventListener('click', () => {
+            const quantity = parseInt(productQuantity.value);
+            addToCart(currentProduct, quantity);
+            showPage('cart');
+        });
+        
+        // Login/Signup tabs
+        loginTab.addEventListener('click', () => {
+            loginTab.className = 'flex-1 py-4 px-6 text-center font-bold border-b-4 border-primary text-primary';
+            signupTab.className = 'flex-1 py-4 px-6 text-center font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300';
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+        });
+        
+        signupTab.addEventListener('click', () => {
+            signupTab.className = 'flex-1 py-4 px-6 text-center font-bold border-b-4 border-primary text-primary';
+            loginTab.className = 'flex-1 py-4 px-6 text-center font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300';
+            signupForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+        });
+        
+        // Filter toggle (mobile)
+        filterToggle.addEventListener('click', () => {
+            filtersSidebar.classList.toggle('hidden');
+        });
+        
+        // Apply filters
+        applyFiltersBtn.addEventListener('click', () => {
+            const selectedCategories = Array.from(filterCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            
+            if (selectedCategories.length === 0) {
+                renderProducts(products);
+            } else {
+                const filteredProducts = products.filter(product => 
+                    selectedCategories.includes(product.category)
+                );
+                renderProducts(filteredProducts);
+            }
+            
+            if (window.innerWidth < 1024) {
+                filtersSidebar.classList.add('hidden');
+            }
+        });
+        
+        // Form submissions
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Login functionality would be implemented in a real application.');
+        });
+        
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Signup functionality would be implemented in a real application.');
+        });
+        
+        // ADD THIS - Checkout button from cart page
+        const proceedToCheckoutBtn = document.querySelector('#cart a[href="#checkout"]');
+        if (proceedToCheckoutBtn) {
+            proceedToCheckoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage('checkout');
+            });
+        }
+        
+        // ADD THIS - Complete Order button in checkout
+        const completeOrderBtn = document.querySelector('#checkout button');
+        if (completeOrderBtn) {
+            completeOrderBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Order completed successfully! Thank you for your purchase.');
+                cart = [];
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+                showPage('home');
+            });
+        }
+    }
+
+    // Show a specific page
+    function showPage(pageId) {
+        pages.forEach(page => {
+            page.classList.add('hidden');
+        });
+        document.getElementById(pageId).classList.remove('hidden');
+        
+        // Update active nav link
+        navLinks.forEach(link => {
+            link.classList.remove('text-primary', 'font-bold');
+            if (link.getAttribute('href') === `#${pageId}`) {
+                link.classList.add('text-primary', 'font-bold');
+            }
+        });
+        
+        // Scroll to top
+        window.scrollTo(0, 0);
+    }
+
+    // Render products grid
+    function renderProducts(productsToRender) {
+        productsGrid.innerHTML = '';
+        
+        productsToRender.forEach(product => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl';
+            productCard.innerHTML = `
+                <div class="relative overflow-hidden rounded-xl mb-4">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover">
+                    <div class="absolute top-4 right-4">
+                        <button class="bg-white dark:bg-gray-700 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300">
+                            <i class="fas fa-heart text-gray-600 dark:text-gray-300"></i>
+                        </button>
+                    </div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-gradient-to-r from-primary to-secondary text-white px-3 py-1 rounded-full text-sm font-bold">
+                            ${product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+                        </span>
+                    </div>
+                </div>
+                <h3 class="font-bold text-xl mb-2">${product.name}</h3>
+                <div class="flex items-center mb-3">
+                    <div class="flex text-yellow-400">
+                        ${renderStars(product.rating)}
+                    </div>
+                    <span class="ml-2 text-gray-600 dark:text-gray-300">(${product.rating})</span>
+                </div>
+                <p class="text-2xl font-bold text-transparent bg-gradient-to-r from-primary to-secondary bg-clip-text mb-4">$${product.price.toLocaleString()}</p>
+                <button class="view-details-btn w-full bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 hover:from-gray-300 hover:to-gray-400 dark:hover:from-gray-600 dark:hover:to-gray-500 text-gray-800 dark:text-white py-3 rounded-xl font-bold transition-all duration-300"
+                        data-id="${product.id}">
+                    View Details
+                </button>
+            `;
+            productsGrid.appendChild(productCard);
+        });
+        
+        // Add event listeners to view details buttons
+        document.querySelectorAll('.view-details-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const productId = parseInt(btn.getAttribute('data-id'));
+                showProductDetails(productId);
+            });
+        });
+    }
+
+    // Render stars for rating
+    function renderStars(rating) {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        let starsHtml = '';
+        
+        for (let i = 0; i < fullStars; i++) {
+            starsHtml += '<i class="fas fa-star"></i>';
+        }
+        
+        if (hasHalfStar) {
+            starsHtml += '<i class="fas fa-star-half-alt"></i>';
+        }
+        
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+        for (let i = 0; i < emptyStars; i++) {
+            starsHtml += '<i class="far fa-star"></i>';
+        }
+        
+        return starsHtml;
+    }
+
+    // Show product details
+    function showProductDetails(productId) {
+        currentProduct = products.find(p => p.id === productId);
+        if (!currentProduct) return;
+        
+        productImage.src = currentProduct.image;
+        productTitle.textContent = currentProduct.name;
+        productPrice.textContent = `$${currentProduct.price.toLocaleString()}`;
+        productDescription.textContent = currentProduct.description;
+        productQuantity.value = 1;
+        
+        // Render related products
+        const relatedProducts = products.filter(p => p.category === currentProduct.category && p.id !== currentProduct.id).slice(0, 4);
+        renderRelatedProducts(relatedProducts);
+        
+        showPage('product-details');
+    }
+
+    // Render related products
+    function renderRelatedProducts(productsToRender) {
+        const relatedContainer = document.getElementById('related-products');
+        relatedContainer.innerHTML = '';
+        
+        productsToRender.forEach(product => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg';
+            productCard.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover rounded-xl mb-3">
+                <h4 class="font-bold text-lg mb-1">${product.name}</h4>
+                <div class="flex items-center mb-2">
+                    <div class="flex text-yellow-400 text-sm">
+                        ${renderStars(product.rating)}
+                    </div>
+                </div>
+                <p class="text-xl font-bold text-transparent bg-gradient-to-r from-primary to-secondary bg-clip-text mb-3">$${product.price.toLocaleString()}</p>
+                <button class="view-related-btn w-full bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 hover:from-gray-300 hover:to-gray-400 dark:hover:from-gray-600 dark:hover:to-gray-500 text-gray-800 dark:text-white py-2 rounded-lg font-bold text-sm transition-all duration-300"
+                        data-id="${product.id}">
+                    View Details
+                </button>
+            `;
+            relatedContainer.appendChild(productCard);
+        });
+        
+        // Add event listeners to view related product buttons
+        document.querySelectorAll('.view-related-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const productId = parseInt(btn.getAttribute('data-id'));
+                showProductDetails(productId);
+            });
+        });
+    }
+
+    // Add to cart
+    function addToCart(product, quantity) {
+        const existingItem = cart.find(item => item.id === product.id);
+        
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                quantity: quantity
+            });
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        renderCart();
+    }
+
+    // Update cart count
+    function updateCartCount() {
+        const count = cart.reduce((total, item) => total + item.quantity, 0);
+        cartCount.textContent = count;
+    }
+
+    // Render cart
+    function renderCart() {
+        if (cart.length === 0) {
+            cartItems.innerHTML = `
+                <div class="p-16 text-center">
+                    <div class="w-24 h-24 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-shopping-cart text-4xl text-gray-600 dark:text-gray-300"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Your cart is empty</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-8">Add some luxury items to your cart</p>
+                    <a href="#products" class="bg-gradient-to-r from-primary to-secondary hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 px-8 rounded-full inline-block transition-all duration-300 transform hover:scale-105">
+                        Continue Shopping
+                    </a>
+                </div>
+            `;
+            cartTotal.textContent = '$0.00';
+            renderCheckoutCart();
+            return;
+        }
+        
+        cartItems.innerHTML = '';
+        let total = 0;
+        
+        cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            
+            const cartItem = document.createElement('div');
+            cartItem.className = 'cart-item p-6 flex items-center';
+            cartItem.innerHTML = `
+                <img src="${item.image}" alt="${item.name}" class="w-24 h-24 object-cover rounded-xl mr-6">
+                <div class="flex-1">
+                    <h4 class="font-bold text-xl mb-2">${item.name}</h4>
+                    <p class="text-primary font-bold text-lg mb-2">$${item.price.toLocaleString()}</p>
+                    <div class="flex items-center">
+                        <button class="decrease-qty bg-gray-200 dark:bg-gray-700 w-10 h-10 rounded-l-lg flex items-center justify-center">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="text" value="${item.quantity}" class="item-quantity w-16 h-10 text-center border-t border-b border-gray-300 dark:border-gray-600 outline-none font-bold">
+                        <button class="increase-qty bg-gray-200 dark:bg-gray-700 w-10 h-10 rounded-r-lg flex items-center justify-center">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <p class="font-bold text-xl w-32 text-right">$${itemTotal.toLocaleString()}</p>
+                <button class="remove-item text-red-500 hover:text-red-700 ml-6 w-10 h-10 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 transition-all duration-300">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            cartItems.appendChild(cartItem);
+        });
+        
+        cartTotal.textContent = `$${total.toLocaleString()}`;
+        renderCheckoutCart();
+        
+        // Add event listeners to cart item controls
+        document.querySelectorAll('.decrease-qty').forEach((btn, index) => {
+            btn.addEventListener('click', () => updateCartItemQuantity(index, -1));
+        });
+        
+        document.querySelectorAll('.increase-qty').forEach((btn, index) => {
+            btn.addEventListener('click', () => updateCartItemQuantity(index, 1));
+        });
+        
+        document.querySelectorAll('.remove-item').forEach((btn, index) => {
+            btn.addEventListener('click', () => removeCartItem(index));
+        });
+        
+        document.querySelectorAll('.item-quantity').forEach((input, index) => {
+            input.addEventListener('change', () => {
+                const newQty = parseInt(input.value) || 1;
+                updateCartItemQuantity(index, newQty - cart[index].quantity);
+            });
+        });
+    }
+
+    // Update cart item quantity
+    function updateCartItemQuantity(index, change) {
+        const item = cart[index];
+        let newQty = item.quantity + change;
+        
+        if (newQty < 1) newQty = 1;
+        
+        item.quantity = newQty;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        renderCart();
+    }
+
+    // Remove cart item
+    function removeCartItem(index) {
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        renderCart();
+    }
+
+    // Render checkout cart
+    function renderCheckoutCart() {
+        checkoutCartItems.innerHTML = '';
+        let subtotal = 0;
+        
+        cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            subtotal += itemTotal;
+            
+            const cartItem = document.createElement('div');
+            cartItem.className = 'flex justify-between items-center pb-4 border-b border-gray-200 dark:border-gray-700';
+            cartItem.innerHTML = `
+                <div class="flex items-center">
+                    <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg mr-4">
+                    <div>
+                        <p class="font-bold">${item.name}</p>
+                        <p class="text-gray-600 dark:text-gray-300">Qty: ${item.quantity}</p>
+                    </div>
+                </div>
+                <p class="font-bold">$${itemTotal.toLocaleString()}</p>
+            `;
+            checkoutCartItems.appendChild(cartItem);
+        });
+        
+        const tax = subtotal * 0.08;
+        const total = subtotal + tax;
+        
+        checkoutSubtotal.textContent = `$${subtotal.toLocaleString()}`;
+        checkoutTax.textContent = `$${tax.toLocaleString()}`;
+        checkoutTotal.textContent = `$${total.toLocaleString()}`;
+    }
+
+    // Initialize the app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
